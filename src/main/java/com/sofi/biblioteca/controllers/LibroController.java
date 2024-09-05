@@ -35,5 +35,9 @@ public class LibroController {
     }
 
     @PutMapping("/edit/{id}")
+    public ResponseEntity<?>editarLibro(@RequestBody Libro libro){
+        Libro editedLibro = libroService.editLibro(libro);
+        return ResponseEntity.status(HttpStatus.CREATED).body(editedLibro);
+    }
 
 }
