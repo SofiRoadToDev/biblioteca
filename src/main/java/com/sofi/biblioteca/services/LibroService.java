@@ -16,4 +16,5 @@ public interface LibroService {
     public Libro saveLibro (Libro libro);
     public Libro editLibro (Libro libro);
     public void deleteLibro (Long id);
+    public Set<Libro> getByPalabraEnTitulo(String palabra);
 }

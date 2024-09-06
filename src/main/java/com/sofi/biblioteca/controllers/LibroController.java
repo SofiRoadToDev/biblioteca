@@ -5,7 +5,6 @@ import com.sofi.biblioteca.services.LibroService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -15,7 +14,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class LibroController {
 
-    private LibroService libroService;
+    private final LibroService libroService;
+
+
     @GetMapping()
     public ResponseEntity<?> getAll(){
        Set<Libro> libros =  libroService.getAllLibros();

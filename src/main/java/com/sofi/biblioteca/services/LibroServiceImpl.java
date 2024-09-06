@@ -4,11 +4,13 @@ import com.sofi.biblioteca.entities.Libro;
 import com.sofi.biblioteca.repositories.LibroRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
 
 @AllArgsConstructor
+@Service
 public class LibroServiceImpl implements LibroService{
 
     private LibroRepository libroRep;
@@ -56,5 +58,10 @@ public class LibroServiceImpl implements LibroService{
             throw new RuntimeException("Libro no encontrado");
         }
         libroRep.delete(libro);
+    }
+
+    @Override
+    public Set<Libro> getByPalabraEnTitulo(String palabra) {
+        return libroRep.getLibrosConPalabraEnTitulo(palabra);
     }
 }
