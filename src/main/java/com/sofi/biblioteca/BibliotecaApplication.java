@@ -9,6 +9,7 @@ import com.sofi.biblioteca.repositories.LibroRepository;
 import com.sofi.biblioteca.services.AutorService;
 import com.sofi.biblioteca.services.EditorialService;
 import com.sofi.biblioteca.services.LibroService;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -29,19 +30,23 @@ public class BibliotecaApplication {
 	}
 
 	@Bean
-	CommandLineRunner testRepos(LibroRepository libroService, AutorRepository autorService, EditorialRepository editorialService){
+	CommandLineRunner testRepos(LibroRepository libroService,
+								AutorRepository autorService,
+								EditorialRepository editorialService){
 		return args -> {
+
 			Autor autor = Autor.builder()
 					.apellido("Lopez")
 					.nombre("Pepe")
 					.build();
+
 
 			Editorial editorial = Editorial.builder()
 					.nombre("EPOXI")
 					.build();
 
 
-			Editorial editorialS = editorialService.save(editorial);
+			Editorial savedEditorial = editorialService.save(editorial);
 			Autor autorS = autorService.save(autor);
 
 
