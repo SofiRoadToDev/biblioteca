@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,9 +24,11 @@ public class ExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> BadRequestHandler(MethodArgumentNotValidException ex){
-        Set<ExceptionDTO> exceptions = ex.getFieldErrors().stream()
-                .map(e -> new ExceptionDTO(e.getField(),e.getDefaultMessage(),HttpStatus.BAD_REQUEST.value()) )
-                .collect(Collectors.toSet());
+        Map<String,String> exceptions = ex.getBindingResult().getAllErrors()
+                .stream().collect(Collectors.toMap(
+                        e -> e.getObjectName(),
+                        e -> e.getDefaultMessage()
+                ));
         return ResponseEntity.badRequest().body(exceptions);
     }
 

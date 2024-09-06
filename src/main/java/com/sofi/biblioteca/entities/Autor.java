@@ -1,11 +1,9 @@
 package com.sofi.biblioteca.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,10 +21,12 @@ public class Autor {
     private Long id;
 
     @Column(length = 50)
+    @NotBlank(message = "EL apellido es obligatorio")
     @Size(max = 50, message = "Debe tener un máximo de 50 caracteres")
     private String apellido;
 
     @Column(length = 50)
+    @NotBlank(message = "EL nombre es obligatorio")
     @Size(max = 50, message = "Debe tener un máximo de 50 caracteres")
     private String nombre;
 

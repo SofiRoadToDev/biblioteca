@@ -2,6 +2,7 @@ package com.sofi.biblioteca.controllers;
 
 import com.sofi.biblioteca.entities.Libro;
 import com.sofi.biblioteca.services.LibroService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class LibroController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> guardarLibro(@RequestBody Libro libro){
+    public ResponseEntity<?> guardarLibro(@RequestBody @Valid Libro libro){
         Libro nuevo = libroService.saveLibro(libro);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
     }
