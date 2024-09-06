@@ -49,7 +49,7 @@ public class BibliotecaApplication {
 					.tema("Lengua")
 					.isbn("6554767ghhg")
 					.titulo("Las vocales")
-					//.editorial(editorialS)
+					.editorial(editorialS)
 					.autores(Set.of(autorS))
 					.build();
 
