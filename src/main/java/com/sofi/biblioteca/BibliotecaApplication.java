@@ -58,7 +58,9 @@ public class BibliotecaApplication {
 					.build();
 
 
-			libroService.save(libro);
+			Libro savedL = libroService.save(libro);
+			//savedA.getLibros().add(savedL);
+			autorService.save(savedA);
 
 
 		};

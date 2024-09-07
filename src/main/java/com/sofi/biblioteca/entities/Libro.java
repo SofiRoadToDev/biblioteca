@@ -32,7 +32,10 @@ public class Libro {
     @ManyToOne(cascade = CascadeType.MERGE)
     private Editorial editorial;
 
-    @ManyToMany(mappedBy = "libros", cascade = {CascadeType.MERGE})
+    @JoinTable( name = "autores_libros",
+            joinColumns = @JoinColumn(name = "libro_id"),
+            inverseJoinColumns = @JoinColumn(name = "autor_id"))
+    @ManyToMany(cascade = CascadeType.MERGE)
     private Set<Autor> autores = new HashSet<>();
 
     @Column(length = 100)

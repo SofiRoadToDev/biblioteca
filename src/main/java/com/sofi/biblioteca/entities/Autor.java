@@ -30,9 +30,6 @@ public class Autor {
     @Size(max = 50, message = "Debe tener un máximo de 50 caracteres")
     private String nombre;
 
-    @ManyToMany(cascade = {CascadeType.MERGE})
-    @JoinTable( name = "autores_libros",
-            joinColumns = @JoinColumn(name = "autor_id"),
-            inverseJoinColumns = @JoinColumn(name = "libro_id"))
+    @ManyToMany(mappedBy = "autores", cascade = CascadeType.MERGE)
     private Set<Libro> libros = new HashSet<>();
 }
