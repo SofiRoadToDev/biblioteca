@@ -1,6 +1,7 @@
 package com.sofi.biblioteca.controllers;
 
 import com.sofi.biblioteca.DTO.ExceptionDTO;
+import com.sofi.biblioteca.exceptions.LibroNotFoundException;
 import com.sun.jdi.connect.IllegalConnectorArgumentsException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @ControllerAdvice(annotations = RestController.class)
@@ -44,5 +46,15 @@ public class ExceptionHandler {
         });
         return errors;
     }*/
+
+    @org.springframework.web.bind.annotation.ExceptionHandler
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> libroNotFound(LibroNotFoundException ex){
+        log.info(ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
 
 }

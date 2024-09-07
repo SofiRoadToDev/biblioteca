@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 import java.util.Set;
 
-public interface LibroRepository extends JpaRepository<Libro, Long> {
+public interface LibroRepository extends CrudRepository<Libro, Long> {
 
     public Optional<Libro>findByTitulo(String titulo);
     public Optional<Libro>findByIsbn(String isbn);

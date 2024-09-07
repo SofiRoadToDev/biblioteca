@@ -1,6 +1,7 @@
 package com.sofi.biblioteca.services;
 
 import com.sofi.biblioteca.entities.Libro;
+import com.sofi.biblioteca.exceptions.LibroNotFoundException;
 
 import java.util.Optional;
 import java.util.Set;
@@ -8,8 +9,8 @@ import java.util.Set;
 public interface LibroService {
 
     public Set<Libro> getAllLibros();
-    public Optional<Libro> getLibroByTitulo(String titulo);
-    public Optional<Libro> getLibroById(Long id);
+    public Libro getLibroByTitulo(String titulo) throws LibroNotFoundException;
+    public Optional<Libro> getLibroById(Long id) throws LibroNotFoundException;
 
     public Set<Libro> getLibroByTema(String tema);
     public Optional<Libro> getLibroByISBN(String isbn);

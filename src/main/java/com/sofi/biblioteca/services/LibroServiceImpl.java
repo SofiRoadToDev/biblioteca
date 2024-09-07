@@ -1,34 +1,45 @@
 package com.sofi.biblioteca.services;
 
 import com.sofi.biblioteca.entities.Libro;
+import com.sofi.biblioteca.exceptions.LibroNotFoundException;
 import com.sofi.biblioteca.repositories.LibroRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Repository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @AllArgsConstructor
 @Service
+@Log4j2
 public class LibroServiceImpl implements LibroService{
 
     private LibroRepository libroRep;
 
     @Override
     public Set<Libro> getAllLibros() {
-        return (Set<Libro>) libroRep.findAll();
+        return StreamSupport
+                .stream(libroRep.findAll().spliterator(),false)
+                .collect(Collectors.toSet());
     }
 
     @Override
-    public Optional<Libro> getLibroByTitulo(String titulo) {
-        return Optional.ofNullable(libroRep.findByTitulo(titulo)
-                .orElseThrow(() -> new RuntimeException("Libro no encontrado")));
+    public Libro getLibroByTitulo(String titulo) throws LibroNotFoundException {
+      return libroRep.findByTitulo(titulo)
+              .orElseThrow(() -> new LibroNotFoundException(String.format(" Libro titulo %s no hallado",titulo)));
     }
 
     @Override
-    public Optional<Libro> getLibroById(Long id) {
-        return Optional.ofNullable(libroRep.findById(id).orElseThrow(() -> new RuntimeException("Libro no encontrado")));
+    public Optional<Libro> getLibroById(Long id) throws LibroNotFoundException {
+        Optional<Libro> libro = libroRep.findById(id);
+        if (libro.isEmpty()){
+          throw new LibroNotFoundException(String.format("Libro %s no encontrado",id));
+        }
+        return libro;
+
     }
 
     @Override
