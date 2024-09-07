@@ -29,10 +29,10 @@ public class Libro {
     @Size(max = 100, message = "Debe tener un máximo de 100 caracteres")
     private String titulo;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Editorial editorial;
 
-    @ManyToMany(mappedBy = "libros", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "libros", cascade = {CascadeType.MERGE})
     private Set<Autor> autores = new HashSet<>();
 
     @Column(length = 100)

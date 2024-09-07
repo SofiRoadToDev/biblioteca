@@ -28,6 +28,6 @@ public class Editorial {
     @NotBlank(message = "EL nombre es obligatorio")
     private String nombre;
 
-    @OneToMany(mappedBy = "editorial", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "editorial", cascade = {CascadeType.MERGE})
     private Set<Libro> libros = new HashSet<>();
 }

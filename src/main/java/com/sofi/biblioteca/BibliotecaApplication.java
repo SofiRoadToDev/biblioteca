@@ -45,24 +45,27 @@ public class BibliotecaApplication {
 					.nombre("EPOXI")
 					.build();
 
-
-			Editorial savedEditorial = editorialService.save(editorial);
-			Autor autorS = autorService.save(autor);
+			Editorial savedE = editorialService.save(editorial);
+			Autor savedA = autorService.save(autor);
 
 
 			Libro libro = Libro.builder()
 					.tema("Lengua")
-					.isbn("6554767ghhg")
-					.titulo("Las vocales")
-					.editorial(editorialS)
-					.autores(Set.of(autorS))
+					.isbn("jhjgjkhkk566546")
+					.titulo("Gramatica I")
+					.editorial(editorialService.save(savedE))
+					.autores(Set.of(autorService.save(savedA)))
 					.build();
 
 
 			libroService.save(libro);
+
+
 		};
 
 
 	}
+
+
 
 }
