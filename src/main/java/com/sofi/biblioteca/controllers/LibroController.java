@@ -43,7 +43,7 @@ public class LibroController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> borrarLibro(@PathVariable Long id){
         libroService.deleteLibro(id);
         return ResponseEntity.ok().body("Libro borrado correctamente");
