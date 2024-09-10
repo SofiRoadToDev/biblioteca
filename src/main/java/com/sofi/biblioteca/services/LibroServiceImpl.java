@@ -27,7 +27,8 @@ public class LibroServiceImpl implements LibroService{
     @Override
     public Set<LibroDTO> getAllLibros() {
         return LibroMapper.INSTANCE.setLibroToLibroDTO(
-                (Set<Libro>) libroRep.findAll()
+                StreamSupport.stream(libroRep.findAll().spliterator(),false)
+                        .collect(Collectors.toSet())
         );
     }
 
