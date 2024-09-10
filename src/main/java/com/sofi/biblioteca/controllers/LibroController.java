@@ -1,5 +1,6 @@
 package com.sofi.biblioteca.controllers;
 
+import com.sofi.biblioteca.DTO.LibroDTO;
 import com.sofi.biblioteca.entities.Libro;
 import com.sofi.biblioteca.exceptions.LibroNotFoundException;
 import com.sofi.biblioteca.services.LibroService;
@@ -21,25 +22,25 @@ public class LibroController {
 
     @GetMapping()
     public ResponseEntity<?> getAll(){
-       Set<Libro> libros =  libroService.getAllLibros();
+       Set<LibroDTO> libros =  libroService.getAllLibros();
        return ResponseEntity.ok(libros);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable Long id) throws LibroNotFoundException {
-        Libro libro = libroService.getLibroById(id);
+        LibroDTO libro = libroService.getLibroById(id);
         return ResponseEntity.ok().body(libro);
     }
 
     @GetMapping("/titulo/{titulo}")
     public ResponseEntity<?>getByTitulo(@PathVariable String titulo) throws LibroNotFoundException{
-            Libro libro = libroService.getLibroByTitulo(titulo);
+            LibroDTO libro = libroService.getLibroByTitulo(titulo);
             return ResponseEntity.ok().body(libro);
     }
 
     @PostMapping()
     public ResponseEntity<?> guardarLibro(@RequestBody @Valid Libro libro){
-        Libro nuevo = libroService.saveLibro(libro);
+        LibroDTO nuevo = libroService.saveLibro(libro);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
     }
 
@@ -51,7 +52,7 @@ public class LibroController {
 
     @PutMapping("/edit/{id}")
     public ResponseEntity<?>editarLibro(@RequestBody Libro libro){
-        Libro editedLibro = libroService.editLibro(libro);
+        LibroDTO editedLibro = libroService.editLibro(libro);
         return ResponseEntity.status(HttpStatus.CREATED).body(editedLibro);
     }
 
