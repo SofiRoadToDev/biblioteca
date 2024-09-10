@@ -57,6 +57,18 @@ public class LibroServiceImpl implements LibroService{
 
     @Override
     public Libro saveLibro(Libro libro) {
+        Set<Autor>autoresEnRepo = (Set<Autor>) autorRepository.findAll();
+
+        libro.getAutores().stream()
+                .filter(a -> !autoresEnRepo.contains(a))
+                .forEach(a -> autorRepository.save(a));
+
+        Set<Autor> autoresYaExistentes = libro.getAutores().stream()
+                .filter(a -> autoresEnRepo.contains(a))
+                .collect(Collectors.toSet());
+
+        libro.setAutores(autoresYaExistentes);
+
         return libroRep.save(libro);
     }
 
