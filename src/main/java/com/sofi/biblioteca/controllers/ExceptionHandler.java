@@ -51,7 +51,7 @@ public class ExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> libroNotFound(LibroNotFoundException ex){
-        log.info(ex.getMessage());
+        //log.info(ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
