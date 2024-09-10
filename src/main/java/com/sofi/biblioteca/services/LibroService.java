@@ -1,5 +1,6 @@
 package com.sofi.biblioteca.services;
 
+import com.sofi.biblioteca.DTO.LibroDTO;
 import com.sofi.biblioteca.entities.Libro;
 import com.sofi.biblioteca.exceptions.LibroNotFoundException;
 
@@ -8,14 +9,14 @@ import java.util.Set;
 
 public interface LibroService {
 
-    public Set<Libro> getAllLibros();
-    public Libro getLibroByTitulo(String titulo) throws LibroNotFoundException;
-    public Libro getLibroById(Long id) throws LibroNotFoundException;
+    public Set<LibroDTO> getAllLibros();
+    public LibroDTO getLibroByTitulo(String titulo) throws LibroNotFoundException;
+    public LibroDTO getLibroById(Long id) throws LibroNotFoundException;
 
-    public Set<Libro> getLibroByTema(String tema);
-    public Libro getLibroByISBN(String isbn);
-    public Libro saveLibro (Libro libro);
-    public Libro editLibro (Libro libro);
+    public Set<LibroDTO> getLibroByTema(String tema);
+    public LibroDTO getLibroByISBN(String isbn);
+    public LibroDTO saveLibro (Libro libro);
+    public LibroDTO editLibro (Libro libro);
     public void deleteLibro (Long id);
     public Set<Libro> getByPalabraEnTitulo(String palabra);
 }

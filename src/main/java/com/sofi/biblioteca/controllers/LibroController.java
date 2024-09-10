@@ -27,7 +27,7 @@ public class LibroController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable Long id) throws LibroNotFoundException {
-        Libro libro = libroService.getLibroById(id).orElseThrow(() -> new RuntimeException(" No existe ese id de libro"));
+        Libro libro = libroService.getLibroById(id);
         return ResponseEntity.ok().body(libro);
     }
 

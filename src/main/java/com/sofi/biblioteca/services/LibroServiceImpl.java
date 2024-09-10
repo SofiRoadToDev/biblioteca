@@ -1,8 +1,10 @@
 package com.sofi.biblioteca.services;
 
+import com.sofi.biblioteca.DTO.LibroDTO;
 import com.sofi.biblioteca.entities.Autor;
 import com.sofi.biblioteca.entities.Libro;
 import com.sofi.biblioteca.exceptions.LibroNotFoundException;
+import com.sofi.biblioteca.mappers.LibroMapper;
 import com.sofi.biblioteca.repositories.AutorRepository;
 import com.sofi.biblioteca.repositories.LibroRepository;
 import lombok.AllArgsConstructor;
@@ -23,40 +25,51 @@ public class LibroServiceImpl implements LibroService{
     private AutorRepository autorRepository;
 
     @Override
-    public Set<Libro> getAllLibros() {
-        return StreamSupport
-                .stream(libroRep.findAll().spliterator(),false)
-                .collect(Collectors.toSet());
+    public Set<LibroDTO> getAllLibros() {
+        return LibroMapper.INSTANCE.setLibroToLibroDTO(
+                (Set<Libro>) libroRep.findAll()
+        );
     }
 
     @Override
-    public Libro getLibroByTitulo(String titulo) {
-      return libroRep.findByTitulo(titulo)
-              .orElseThrow(() -> new LibroNotFoundException(String.format(" Libro titulo %s no hallado",titulo)));
+    public LibroDTO getLibroByTitulo(String titulo) {
+      return LibroMapper.INSTANCE.libroToLibroDto(
+              libroRep.findByTitulo(titulo)
+                      .orElseThrow(
+                              () -> new LibroNotFoundException(String.format(" Libro titulo %s no hallado",titulo)))
+      );
     }
 
     @Override
-    public Libro getLibroById(Long id) {
-        return libroRep.findById(id)
-                .orElseThrow(() ->
-                        new LibroNotFoundException(String.format("Libro id: %s no encontrado", id)));
+    public LibroDTO getLibroById(Long id) {
+        return LibroMapper.INSTANCE.libroToLibroDto(
+                libroRep.findById(id)
+                        .orElseThrow(() ->
+                                new LibroNotFoundException(String.format("Libro id: %s no encontrado", id)))
+        );
+
 
     }
 
     @Override
-    public Set<Libro> getLibroByTema(String tema) {
-        return libroRep.findByTema(tema);
+    public Set<LibroDTO> getLibroByTema(String tema) {
+        return LibroMapper.INSTANCE.setLibroToLibroDTO(
+                libroRep.findByTema(tema)
+        );
     }
 
     @Override
-    public Libro getLibroByISBN(String isbn) {
-        return libroRep.findByIsbn(isbn)
-                .orElseThrow(() ->
-                        new LibroNotFoundException(String.format("Libro isbn: %s no encontrado", isbn)));
+    public LibroDTO getLibroByISBN(String isbn) {
+        return LibroMapper.INSTANCE.libroToLibroDto(
+                libroRep.findByIsbn(isbn)
+                        .orElseThrow(() ->
+                                new LibroNotFoundException(String.format("Libro isbn: %s no encontrado", isbn)))
+        );
+
     }
 
     @Override
-    public Libro saveLibro(Libro libro) {
+    public LibroDTO saveLibro(Libro libro) {
         Set<Autor>autoresEnRepo = (Set<Autor>) autorRepository.findAll();
 
         libro.getAutores().stream()
@@ -69,11 +82,11 @@ public class LibroServiceImpl implements LibroService{
 
         libro.setAutores(autoresYaExistentes);
 
-        return libroRep.save(libro);
+        return LibroMapper.INSTANCE.libroToLibroDto(libroRep.save(libro));
     }
 
     @Override
-    public Libro editLibro(Libro libro) {
+    public LibroDTO editLibro(Libro libro) {
         if(libro.getId()==null){
             throw new IllegalArgumentException("El id es obligatorio para modificar un libro");
         }
@@ -96,7 +109,7 @@ public class LibroServiceImpl implements LibroService{
 
         book.setAutores(autoresYaExistentes);
 
-        return libroRep.save(book);
+        return LibroMapper.INSTANCE.libroToLibroDto(libroRep.save(book));
     }
 
     @Override
