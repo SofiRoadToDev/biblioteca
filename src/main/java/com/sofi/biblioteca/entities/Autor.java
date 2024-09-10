@@ -31,7 +31,7 @@ public class Autor {
     @Size(max = 50, message = "Debe tener un máximo de 50 caracteres")
     private String nombre;
 
-    @ManyToMany(mappedBy = "autores", cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "autores")
     private Set<Libro> libros = new HashSet<>();
 
     @Override
