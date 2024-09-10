@@ -3,6 +3,7 @@ package com.sofi.biblioteca.services;
 import com.sofi.biblioteca.DTO.LibroDTO;
 import com.sofi.biblioteca.entities.Autor;
 import com.sofi.biblioteca.entities.Libro;
+import com.sofi.biblioteca.exceptions.DuplicatedResourceException;
 import com.sofi.biblioteca.exceptions.LibroNotFoundException;
 import com.sofi.biblioteca.mappers.LibroMapper;
 import com.sofi.biblioteca.repositories.AutorRepository;
@@ -71,7 +72,14 @@ public class LibroServiceImpl implements LibroService{
 
     @Override
     public LibroDTO saveLibro(Libro libro) {
-        Set<Autor>autoresEnRepo = (Set<Autor>) autorRepository.findAll();
+        Libro existente= libroRep.findByIsbn(libro.getIsbn())
+                .orElse(new Libro());
+        if(existente.getId()!=null){
+            throw  new DuplicatedResourceException((String.format("EL libro isbn: %s ya existe", libro.getIsbn())));
+        }
+        /*Set<Autor>autoresEnRepo = StreamSupport
+                .stream(autorRepository.findAll().spliterator(),false)
+                .collect(Collectors.toSet());
 
         libro.getAutores().stream()
                 .filter(a -> !autoresEnRepo.contains(a))
@@ -79,9 +87,9 @@ public class LibroServiceImpl implements LibroService{
 
         Set<Autor> autoresYaExistentes = libro.getAutores().stream()
                 .filter(a -> autoresEnRepo.contains(a))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet());*/
 
-        libro.setAutores(autoresYaExistentes);
+        //libro.setAutores(autoresYaExistentes);
 
         return LibroMapper.INSTANCE.libroToLibroDto(libroRep.save(libro));
     }

@@ -1,8 +1,9 @@
 package com.sofi.biblioteca.controllers;
 
-import com.sofi.biblioteca.DTO.ExceptionDTO;
+
+import com.sofi.biblioteca.exceptions.DuplicatedResourceException;
 import com.sofi.biblioteca.exceptions.LibroNotFoundException;
-import com.sun.jdi.connect.IllegalConnectorArgumentsException;
+
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,10 +46,17 @@ public class ExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> libroNotFound(LibroNotFoundException ex){
-        //log.info(ex.getMessage());
+        log.info(ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @org.springframework.web.bind.annotation.ExceptionHandler
+    public ResponseEntity<?>duplicatedResources(DuplicatedResourceException ex){
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
 }
