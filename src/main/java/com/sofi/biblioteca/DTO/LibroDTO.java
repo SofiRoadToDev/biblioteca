@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,4 +18,5 @@ public class LibroDTO {
     private EditorialDTO editorial;
     private String isbn;
     private String tema;
+    private Set<AutorDtoSimple> autores= new HashSet<>();
 }

@@ -10,10 +10,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = {
-        EditorialMapper.class,
+
 })
 public interface LibroMapper {
 
@@ -23,9 +24,12 @@ public interface LibroMapper {
 
        Libro libroDtoToLibro(LibroDTO libroDTO);
 
+       EditorialDTO editorialToEditorialDto(Editorial editorial);
+       Editorial editorialDtoToEditorial(EditorialDTO editorialDTO);
+
        Set<Libro> setLibroDtoToLibro(Set<LibroDTO>libroDTOS);
        Set<LibroDTO>setLibroToLibroDTO(Set<Libro>libros);
 
-       AutorDtoSimple autorToAutorDto(Autor autor);
-       Autor autorDtoToAutor(AutorDtoSimple autorDtoSimple);
+       Set<AutorDtoSimple> autorToAutorDto(Set<Autor> autores);
+       Set<Autor> autorDtoToAutor(Set<AutorDtoSimple> autorDtoSimple);
 }
