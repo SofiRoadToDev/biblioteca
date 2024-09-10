@@ -1,7 +1,9 @@
 package com.sofi.biblioteca.services;
 
+import com.sofi.biblioteca.entities.Autor;
 import com.sofi.biblioteca.entities.Libro;
 import com.sofi.biblioteca.exceptions.LibroNotFoundException;
+import com.sofi.biblioteca.repositories.AutorRepository;
 import com.sofi.biblioteca.repositories.LibroRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -18,6 +20,7 @@ import java.util.stream.StreamSupport;
 public class LibroServiceImpl implements LibroService{
 
     private LibroRepository libroRep;
+    private AutorRepository autorRepository;
 
     @Override
     public Set<Libro> getAllLibros() {
@@ -27,18 +30,16 @@ public class LibroServiceImpl implements LibroService{
     }
 
     @Override
-    public Libro getLibroByTitulo(String titulo) throws LibroNotFoundException {
+    public Libro getLibroByTitulo(String titulo) {
       return libroRep.findByTitulo(titulo)
               .orElseThrow(() -> new LibroNotFoundException(String.format(" Libro titulo %s no hallado",titulo)));
     }
 
     @Override
-    public Optional<Libro> getLibroById(Long id) throws LibroNotFoundException {
-        Optional<Libro> libro = libroRep.findById(id);
-        if (libro.isEmpty()){
-          throw new LibroNotFoundException(String.format("Libro %s no encontrado",id));
-        }
-        return libro;
+    public Libro getLibroById(Long id) {
+        return libroRep.findById(id)
+                .orElseThrow(() ->
+                        new LibroNotFoundException(String.format("Libro id: %s no encontrado", id)));
 
     }
 
@@ -48,8 +49,10 @@ public class LibroServiceImpl implements LibroService{
     }
 
     @Override
-    public Optional<Libro> getLibroByISBN(String isbn) {
-        return libroRep.findByIsbn(isbn);
+    public Libro getLibroByISBN(String isbn) {
+        return libroRep.findByIsbn(isbn)
+                .orElseThrow(() ->
+                        new LibroNotFoundException(String.format("Libro isbn: %s no encontrado", isbn)));
     }
 
     @Override
@@ -59,12 +62,35 @@ public class LibroServiceImpl implements LibroService{
 
     @Override
     public Libro editLibro(Libro libro) {
-        return libroRep.save(libro);
+        if(libro.getId()==null){
+            throw new IllegalArgumentException("El id es obligatorio para modificar un libro");
+        }
+        Libro book = libroRep.findById(libro.getId())
+                .orElseThrow(() -> new LibroNotFoundException("Libro id "+libro.getId()+" no encontraddo"));
+        book.setTema(libro.getTema());
+        book.setIsbn(libro.getIsbn());
+        book.setEditorial(libro.getEditorial());
+        book.setTitulo(libro.getTitulo());
+
+        Set<Autor>autoresEnRepo = (Set<Autor>) autorRepository.findAll();
+
+        libro.getAutores().stream()
+                .filter(a -> !autoresEnRepo.contains(a))
+                .forEach(a -> autorRepository.save(a));
+
+        Set<Autor> autoresYaExistentes = libro.getAutores().stream()
+                .filter(a -> autoresEnRepo.contains(a))
+                .collect(Collectors.toSet());
+
+        book.setAutores(autoresYaExistentes);
+
+        return libroRep.save(book);
     }
 
     @Override
     public void deleteLibro(Long id) {
-        Libro libro = libroRep.findById(id).orElse(null);
+        Libro libro = libroRep.findById(id)
+                .orElseThrow(() -> new LibroNotFoundException(String.format("Libro id: %s no encontrado", id)));
         if(libro == null){
             throw new RuntimeException("Libro no encontrado");
         }

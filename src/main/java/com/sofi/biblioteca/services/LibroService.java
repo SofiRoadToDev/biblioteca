@@ -10,10 +10,10 @@ public interface LibroService {
 
     public Set<Libro> getAllLibros();
     public Libro getLibroByTitulo(String titulo) throws LibroNotFoundException;
-    public Optional<Libro> getLibroById(Long id) throws LibroNotFoundException;
+    public Libro getLibroById(Long id) throws LibroNotFoundException;
 
     public Set<Libro> getLibroByTema(String tema);
-    public Optional<Libro> getLibroByISBN(String isbn);
+    public Libro getLibroByISBN(String isbn);
     public Libro saveLibro (Libro libro);
     public Libro editLibro (Libro libro);
     public void deleteLibro (Long id);

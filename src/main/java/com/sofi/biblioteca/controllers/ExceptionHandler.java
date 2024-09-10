@@ -33,19 +33,13 @@ public class ExceptionHandler {
                 ));
         return ResponseEntity.badRequest().body(exceptions);
     }
+    @org.springframework.web.bind.annotation.ExceptionHandler
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?>badArguments( IllegalArgumentException ex){
+        return ResponseEntity.badRequest()
+                .body(ex.getMessage());    }
 
-    /*@ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }*/
 
     @org.springframework.web.bind.annotation.ExceptionHandler
     @ResponseBody
