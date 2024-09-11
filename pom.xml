@@ -71,6 +71,12 @@
 			<artifactId>mapstruct</artifactId>
 			<version>${org.mapstruct.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>Runtime</scope>
+			<version>8.0.28</version>
+		</dependency>
 	</dependencies>
 
 	<build>
