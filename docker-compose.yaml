@@ -1,15 +1,16 @@
 version: '3.0'
 services:
   database:
-    image: mysql:8.0.28-debian
+    image: mysql:8.0.30
     container_name: biblioteca-db
     ports:
       - "3306:3306"
+    restart: always
     environment:
       - MYSQL_USER=sofi
       - MYSQL_PASSWORD=sofi
       - MYSQL_DATABASE=biblioteca
-      - MYSQL_ROOT_PASSWORD=cascara
+      - MYSQL_ROOT_PASSWORD=sofi
     volumes:
       - db-data:/var/lib/mysql
     networks:
@@ -28,8 +29,7 @@ services:
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
-      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
-      - SPRING_JPA_DATABASE_PLATFORM=${SPRING_JPA_DATABASE_PLATFORM}
+      - SPRING_DATASOURCE_DRIVER_CLASSNAME=${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=${DB_DIALECT}
     networks:
       - sofi-net
