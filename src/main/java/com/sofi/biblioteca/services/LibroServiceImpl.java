@@ -3,6 +3,7 @@ package com.sofi.biblioteca.services;
 import com.sofi.biblioteca.DTO.LibroDTO;
 import com.sofi.biblioteca.entities.Autor;
 import com.sofi.biblioteca.entities.Libro;
+import com.sofi.biblioteca.exceptions.DuplicatedResourceException;
 import com.sofi.biblioteca.exceptions.LibroNotFoundException;
 import com.sofi.biblioteca.mappers.LibroMapper;
 import com.sofi.biblioteca.repositories.AutorRepository;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -71,17 +73,11 @@ public class LibroServiceImpl implements LibroService{
 
     @Override
     public LibroDTO saveLibro(Libro libro) {
-        Set<Autor>autoresEnRepo = (Set<Autor>) autorRepository.findAll();
-
-        libro.getAutores().stream()
-                .filter(a -> !autoresEnRepo.contains(a))
-                .forEach(a -> autorRepository.save(a));
-
-        Set<Autor> autoresYaExistentes = libro.getAutores().stream()
-                .filter(a -> autoresEnRepo.contains(a))
-                .collect(Collectors.toSet());
-
-        libro.setAutores(autoresYaExistentes);
+        Libro existente= libroRep.findByIsbn(libro.getIsbn())
+                .orElse(new Libro());
+        if(existente.getId()!=null){
+            throw  new DuplicatedResourceException((String.format("EL libro isbn: %s ya existe", libro.getIsbn())));
+        }
 
         return LibroMapper.INSTANCE.libroToLibroDto(libroRep.save(libro));
     }
@@ -98,11 +94,11 @@ public class LibroServiceImpl implements LibroService{
         book.setEditorial(libro.getEditorial());
         book.setTitulo(libro.getTitulo());
 
-        Set<Autor>autoresEnRepo = (Set<Autor>) autorRepository.findAll();
+        Set<Autor>autoresEnRepo = StreamSupport
+                .stream(autorRepository.findAll().spliterator(),false)
+                .collect(Collectors.toSet());
 
-        libro.getAutores().stream()
-                .filter(a -> !autoresEnRepo.contains(a))
-                .forEach(a -> autorRepository.save(a));
+       // Set<Autor>unsaved = libro
 
         Set<Autor> autoresYaExistentes = libro.getAutores().stream()
                 .filter(a -> autoresEnRepo.contains(a))
