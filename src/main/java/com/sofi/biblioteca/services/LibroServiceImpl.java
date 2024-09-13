@@ -2,11 +2,13 @@ package com.sofi.biblioteca.services;
 
 import com.sofi.biblioteca.DTO.LibroDTO;
 import com.sofi.biblioteca.entities.Autor;
+import com.sofi.biblioteca.entities.Editorial;
 import com.sofi.biblioteca.entities.Libro;
 import com.sofi.biblioteca.exceptions.DuplicatedResourceException;
 import com.sofi.biblioteca.exceptions.LibroNotFoundException;
 import com.sofi.biblioteca.mappers.LibroMapper;
 import com.sofi.biblioteca.repositories.AutorRepository;
+import com.sofi.biblioteca.repositories.EditorialRepository;
 import com.sofi.biblioteca.repositories.LibroRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,6 +26,7 @@ import java.util.stream.StreamSupport;
 public class LibroServiceImpl implements LibroService{
 
     private LibroRepository libroRep;
+    private EditorialRepository editorialRepository;
     private AutorRepository autorRepository;
 
     @Override
@@ -78,6 +81,26 @@ public class LibroServiceImpl implements LibroService{
         if(existente.getId()!=null){
             throw  new DuplicatedResourceException((String.format("EL libro isbn: %s ya existe", libro.getIsbn())));
         }
+        Set<Autor> autores = libro.getAutores();
+        Set<Autor>  autoresToSave = new HashSet<>();
+        autores.forEach(a -> {
+            Autor autorDB = autorRepository.findByApellidoIgnoreCaseAndNombreIgnoreCase(a.getApellido(), a.getNombre()).get();
+            if(autorDB != null){
+                autoresToSave.add(autorDB);
+            }else{
+                autoresToSave.add( autorRepository.save(a));
+            }
+        });
+        libro.setAutores(autoresToSave);
+
+        Editorial existenteEd = editorialRepository.findByName(libro.getEditorial().getNombre()).get();
+        if(existenteEd!=null){
+            libro.setEditorial(existenteEd);
+        }else{
+            Editorial nuevaEd = editorialRepository.save(libro.getEditorial());
+            libro.setEditorial(nuevaEd);
+        }
+
 
         return LibroMapper.INSTANCE.libroToLibroDto(libroRep.save(libro));
     }

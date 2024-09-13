@@ -17,11 +17,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Set;
 import java.util.logging.Logger;
 
 @SpringBootApplication
+@Configuration
 public class BibliotecaApplication {
 
 
@@ -44,6 +49,7 @@ public class BibliotecaApplication {
 					.build();
 
 
+
 			Editorial editorial = Editorial.builder()
 					.nombre("EPOXI")
 					.build();
@@ -53,14 +59,26 @@ public class BibliotecaApplication {
 					.tema("Lengua")
 					.isbn("jhjgjkhkk566546")
 					.titulo("Gramatica I")
-					.editorial(editorial)
-					.autores(Set.of(autor))
+					.editorial(editorialService.save(editorial))
+					.autores(Set.of(autorService.save(autor)))
 					.build();
-			Libro savedL = libroService.save(libro);
+			libroService.save(libro);
+
 		};
 
 
 	}
+
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/api/v1/").allowedOrigins("http://localhost:4200");
+			}
+		};
+	}
+
 
 
 

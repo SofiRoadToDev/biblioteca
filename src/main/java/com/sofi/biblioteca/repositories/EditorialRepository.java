@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface EditorialRepository extends CrudRepository<Editorial,Long> {
 
-    @Query( " Select e from Editorial e where e.nombre = :nombre")
+    @Query( " Select e from Editorial e where LOWER(e.nombre) = LOWER(:nombre)")
     public Optional<Editorial> findByName(@Param("nombre") String nombre);
 
 }

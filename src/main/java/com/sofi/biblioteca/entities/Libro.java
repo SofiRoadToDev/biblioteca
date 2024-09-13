@@ -29,11 +29,11 @@ public class Libro {
     @Size(max = 100, message = "Debe tener un máximo de 100 caracteres")
     private String titulo;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST})
+    @ManyToOne(cascade = { CascadeType.MERGE}) // Merge para persisitir por separado, asi comprobamos que no duplicamos la editorial
     @JoinColumn(name = "editorial_id")
     private Editorial editorial;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable( name = "autores_libros",
             joinColumns = @JoinColumn(name = "libro_id"),
             inverseJoinColumns = @JoinColumn(name = "autor_id"))
