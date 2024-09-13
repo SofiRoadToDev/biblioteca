@@ -39,8 +39,8 @@ public class LibroController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> guardarLibro(@RequestBody @Valid Libro libro){
-        LibroDTO nuevo = libroService.saveLibro(libro);
+    public ResponseEntity<?> guardarLibro(@RequestBody @Valid LibroDTO libroDto){
+        LibroDTO nuevo = libroService.saveLibro(libroDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
     }
 
@@ -51,8 +51,8 @@ public class LibroController {
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<?>editarLibro(@RequestBody Libro libro){
-        LibroDTO editedLibro = libroService.editLibro(libro);
+    public ResponseEntity<?>editarLibro(@RequestBody LibroDTO libroDTO){
+        LibroDTO editedLibro = libroService.editLibro(libroDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(editedLibro);
     }
 

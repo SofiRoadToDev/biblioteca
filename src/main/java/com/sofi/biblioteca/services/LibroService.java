@@ -15,8 +15,8 @@ public interface LibroService {
 
     public Set<LibroDTO> getLibroByTema(String tema);
     public LibroDTO getLibroByISBN(String isbn);
-    public LibroDTO saveLibro (Libro libro);
-    public LibroDTO editLibro (Libro libro);
+    public LibroDTO saveLibro (LibroDTO libroDTO);
+    public LibroDTO editLibro (LibroDTO libroDTO);
     public void deleteLibro (Long id);
     public Set<Libro> getByPalabraEnTitulo(String palabra);
 }

@@ -18,18 +18,22 @@ import java.util.Set;
 })
 public interface LibroMapper {
 
-      LibroMapper INSTANCE = Mappers.getMapper(LibroMapper.class);
+       LibroMapper INSTANCE = Mappers.getMapper(LibroMapper.class);
 
+       @Mapping(source = "editorial.nombre", target = "editorial")
        LibroDTO libroToLibroDto(Libro libro);
 
+       @Mapping(source = "editorial", target = "editorial.nombre")
        Libro libroDtoToLibro(LibroDTO libroDTO);
 
-       EditorialDTO editorialToEditorialDto(Editorial editorial);
-       Editorial editorialDtoToEditorial(EditorialDTO editorialDTO);
+       //EditorialDTO editorialToEditorialDto(Editorial editorial);
+       //Editorial editorialDtoToEditorial(EditorialDTO editorialDTO);
 
        Set<Libro> setLibroDtoToLibro(Set<LibroDTO>libroDTOS);
        Set<LibroDTO>setLibroToLibroDTO(Set<Libro>libros);
 
        Set<AutorDtoSimple> autorToAutorDto(Set<Autor> autores);
        Set<Autor> autorDtoToAutor(Set<AutorDtoSimple> autorDtoSimple);
+
+
 }

@@ -1,11 +1,13 @@
 package com.sofi.biblioteca.services;
 
+import com.sofi.biblioteca.DTO.EditorialDTO;
 import com.sofi.biblioteca.DTO.LibroDTO;
 import com.sofi.biblioteca.entities.Autor;
 import com.sofi.biblioteca.entities.Editorial;
 import com.sofi.biblioteca.entities.Libro;
 import com.sofi.biblioteca.exceptions.DuplicatedResourceException;
 import com.sofi.biblioteca.exceptions.LibroNotFoundException;
+import com.sofi.biblioteca.mappers.EditorialMapper;
 import com.sofi.biblioteca.mappers.LibroMapper;
 import com.sofi.biblioteca.repositories.AutorRepository;
 import com.sofi.biblioteca.repositories.EditorialRepository;
@@ -75,27 +77,27 @@ public class LibroServiceImpl implements LibroService{
     }
 
     @Override
-    public LibroDTO saveLibro(Libro libro) {
-        Libro existente= libroRep.findByIsbn(libro.getIsbn())
-                .orElse(new Libro());
-        if(existente.getId()!=null){
+    public LibroDTO saveLibro(LibroDTO libroDto) {
+        Libro libro = LibroMapper.INSTANCE.libroDtoToLibro(libroDto);
+        Optional<Libro> existente= libroRep.findByIsbn(libro.getIsbn());
+        if(existente.isPresent()){
             throw  new DuplicatedResourceException((String.format("EL libro isbn: %s ya existe", libro.getIsbn())));
         }
         Set<Autor> autores = libro.getAutores();
         Set<Autor>  autoresToSave = new HashSet<>();
         autores.forEach(a -> {
-            Autor autorDB = autorRepository.findByApellidoIgnoreCaseAndNombreIgnoreCase(a.getApellido(), a.getNombre()).get();
-            if(autorDB != null){
-                autoresToSave.add(autorDB);
+            Optional <Autor> autorDB = autorRepository.findByApellidoIgnoreCaseAndNombreIgnoreCase(a.getApellido(), a.getNombre());
+            if(autorDB.isPresent()){
+                autoresToSave.add(autorDB.get());
             }else{
                 autoresToSave.add( autorRepository.save(a));
             }
         });
         libro.setAutores(autoresToSave);
 
-        Editorial existenteEd = editorialRepository.findByName(libro.getEditorial().getNombre()).get();
-        if(existenteEd!=null){
-            libro.setEditorial(existenteEd);
+        Optional<Editorial> existenteEd = editorialRepository.findByName(libro.getEditorial().getNombre());
+        if(existenteEd.isPresent()){
+            libro.setEditorial(existenteEd.get());
         }else{
             Editorial nuevaEd = editorialRepository.save(libro.getEditorial());
             libro.setEditorial(nuevaEd);
@@ -104,33 +106,41 @@ public class LibroServiceImpl implements LibroService{
 
         return LibroMapper.INSTANCE.libroToLibroDto(libroRep.save(libro));
     }
-
     @Override
-    public LibroDTO editLibro(Libro libro) {
-        if(libro.getId()==null){
+    public LibroDTO editLibro(LibroDTO libroDTO) {
+        if(libroDTO.getId()==null){
             throw new IllegalArgumentException("El id es obligatorio para modificar un libro");
         }
-        Libro book = libroRep.findById(libro.getId())
-                .orElseThrow(() -> new LibroNotFoundException("Libro id "+libro.getId()+" no encontraddo"));
-        book.setTema(libro.getTema());
-        book.setIsbn(libro.getIsbn());
-        book.setEditorial(libro.getEditorial());
-        book.setTitulo(libro.getTitulo());
+        Libro book = libroRep.findById(libroDTO.getId())
+                .orElseThrow(() -> new LibroNotFoundException("Libro id "+libroDTO.getId()+" no encontraddo"));
+        book.setTema(libroDTO.getTema());
+        book.setIsbn(libroDTO.getIsbn());
+        book.setTitulo(libroDTO.getTitulo());
 
-        Set<Autor>autoresEnRepo = StreamSupport
-                .stream(autorRepository.findAll().spliterator(),false)
-                .collect(Collectors.toSet());
+        Optional<Editorial>storedEditorial = editorialRepository.findByName(libroDTO.getEditorial());
+        if(storedEditorial.isPresent()){
+            book.setEditorial(storedEditorial.get());
+        }else{
+            Editorial editorialToSave = new Editorial();
+            editorialToSave.setNombre(libroDTO.getEditorial());
+            editorialRepository.save(editorialToSave);
+        }
 
-       // Set<Autor>unsaved = libro
-
-        Set<Autor> autoresYaExistentes = libro.getAutores().stream()
-                .filter(a -> autoresEnRepo.contains(a))
-                .collect(Collectors.toSet());
-
-        book.setAutores(autoresYaExistentes);
+        libroDTO.getAutores().forEach(a -> {
+            Optional<Autor>stored = autorRepository.findByApellidoIgnoreCaseAndNombreIgnoreCase(a.getApellido(), a.getNombre());
+            if(stored.isPresent()){
+                if (!book.getAutores().contains(stored.get())){
+                    book.getAutores().add(stored.get());
+                }
+            }else{
+                book.getAutores().add(autorRepository.save(stored.get()));
+            }
+        });
 
         return LibroMapper.INSTANCE.libroToLibroDto(libroRep.save(book));
     }
+
+
 
     @Override
     public void deleteLibro(Long id) {

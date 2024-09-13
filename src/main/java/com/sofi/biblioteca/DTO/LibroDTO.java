@@ -15,7 +15,7 @@ import java.util.Set;
 public class LibroDTO {
     private Long id;
     private String titulo;
-    private EditorialDTO editorial;
+    private String editorial;
     private String isbn;
     private String tema;
     private Set<AutorDtoSimple> autores= new HashSet<>();

@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -48,5 +49,16 @@ public class Libro {
     @Size(max = 100, message = "Debe tener un máximo de 100 caracteres")
     private String tema;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Libro libro = (Libro) o;
+        return Objects.equals(titulo, libro.titulo) && Objects.equals(isbn, libro.isbn);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(titulo, isbn);
+    }
 }
