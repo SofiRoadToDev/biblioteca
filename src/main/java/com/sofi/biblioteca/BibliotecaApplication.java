@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -54,6 +55,10 @@ public class BibliotecaApplication {
 					.nombre("EPOXI")
 					.build();
 
+			Editorial editorial2 = Editorial.builder()
+					.nombre("Good Vibes")
+					.build();
+
 
 			Libro libro = Libro.builder()
 					.tema("Lengua")
@@ -62,7 +67,23 @@ public class BibliotecaApplication {
 					.editorial(editorialService.save(editorial))
 					.autores(Set.of(autorService.save(autor)))
 					.build();
-			libroService.save(libro);
+
+
+			Autor autor2 = Autor.builder()
+					.apellido("Juarex")
+					.nombre("Jhon")
+					.build();
+
+
+			Libro ingles = Libro.builder()
+					.tema("ingles")
+					.titulo("Good news")
+					.editorial(editorialService.save(editorial2))
+					.isbn("sasasasass")
+					.autores(Set.of(autorService.findById(1L).get(),autorService.save(autor2)))
+					.build();
+
+			libroService.saveAll(List.of(libro, ingles));
 
 		};
 
