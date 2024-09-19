@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -36,6 +37,12 @@ public class LibroController {
     public ResponseEntity<?>getByTitulo(@PathVariable String titulo) throws LibroNotFoundException{
             LibroDTO libro = libroService.getLibroByTitulo(titulo);
             return ResponseEntity.ok().body(libro);
+    }
+
+    @GetMapping("/filter/{word}")
+    public ResponseEntity<?> getByTituloLike(@PathVariable String word){
+        Set<Libro> libroDTO = libroService.getByPalabraEnTitulo(word);
+        return ResponseEntity.ok().body(libroDTO);
     }
 
     @PostMapping()
